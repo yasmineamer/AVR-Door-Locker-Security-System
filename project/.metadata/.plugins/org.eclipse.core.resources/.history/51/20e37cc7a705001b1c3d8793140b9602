@@ -1,0 +1,25 @@
+/*
+ * timers.h
+ *
+ *  Created on: Oct 2, 2020
+ *      Author: Y
+ */
+#include "common_macros.h"
+#include "std_types.h"
+#include "micro_config.h"
+
+#ifndef TIMERS_H_
+#define TIMERS_H_
+
+typedef enum
+{
+	NO_CLOCK,F_CPU_CLOCK,F_CPU_CLOCK_8, F_CPU_CLOCK_64,F_CPU_CLOCK_256,F_CPU_CLOCK_1024,EXTERNAL_CLK_FALLING_EDGE,EXTERNAL_CLK_RAISING_EDGE
+}TIMER_CLK;
+
+typedef struct
+{
+	uint16 init_timer;
+	TIMER_CLK timerClk;
+}timer_config ;
+
+#endif /* TIMERS_H_ */

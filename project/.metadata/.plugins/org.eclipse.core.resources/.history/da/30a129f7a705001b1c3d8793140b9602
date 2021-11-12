@@ -1,0 +1,56 @@
+/*
+ * timers.c
+ *
+ *  Created on: Oct 2, 2020
+ *      Author: Yasmine Amer
+ */
+
+#include "timers.h"
+
+
+/* delay function using timer0 */
+/* no. of cycles = 0xff - initiate_timer + 1 cycle roll over to raise TOV0 flag  */
+/*total delay = no.of cycle * Time of one tick*/
+void delay (timer_config * config_ptr)
+{
+	TCNT0 = config_ptr -> init_timer ;
+	TCCR0 = (1 << FOC0) | ((config_ptr -> timerClk)& 0x07) ;/* normal mode, Prescaling F_CPU CLK  */
+	while (BIT_IS_CLEAR(TIFR,TOV0));/*waiting until overflow occurs  */
+	TCCR0 = 0; /*turn off timer0*/
+	TIFR  = SET_BIT(TIFR, TOV0);/*clear flag by writing one on it*/
+
+}
+
+/*timer0 overflow interrupt handled by ISR */
+
+void timer0_ovf_init(timer_config * config_ptr)
+{
+	TCNT0 = config_ptr -> init_timer ;
+	TCCR0 = (1 << FOC0) | ((config_ptr -> timerClk)& 0x07);
+	TIMSK = (1<<TOIE0);/* ENABLE TIMER0 OVERFLOW INTERRUPT */
+
+}
+
+/*timer0 CTC mode + interrupt handled by ISR */
+
+void timer0_ctc_init(timer_config * config_ptr , uint8 compare_match)
+{
+
+	TCNT0 = config_ptr -> init_timer ;
+	TCCR0 = (1 << FOC0) | (1 << WGM01) |(1<<COM01) | ((config_ptr -> timerClk)& 0x07);
+	OCR0  = compare_match;
+	TIMSK = (1<< OCR0);/* ENABLE TIMER0 Compare match INTERRUPT */
+}
+
+/* timer0 generating fast pwm non_inverting mode*/
+void PWM_init(timer_config * config_ptr)
+{
+	TCNT0 = config_ptr -> init_timer ;
+	TCCR0 = (1 << WGM00) | (1 << WGM01) | (1 << COM01) | ((config_ptr -> timerClk)& 0x07);
+	DDRB |= (1 << PB3);
+}
+
+void set_duty (uint8 duty)
+{
+	OCR0 =duty;
+}
