@@ -20,8 +20,8 @@ void ADC_init(const ADC_configType *config_ptr)
 	/*Adjust Vref*/
 	ADMUX =((config_ptr -> vref)<<6);
 	/*enable ADC
-	 * ADC Clock
-	 * Enable or disable interrupt
+	 * choose ADC Clock
+	 * Enable or disable interrupt if conversion complete
 	 */
 	ADCSRA = (1<<ADEN) | ((config_ptr -> interrupt)<<ADIE) | (config_ptr ->clk);
 

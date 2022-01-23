@@ -21,7 +21,7 @@
 #include <util/delay.h>
 
 #define pass_length 5
-#define READY 1
+#define READY 10
 #define NOT_READY 0
 #define IF_PW_MATCHED 7
 #define MAX_TRY 3
@@ -29,7 +29,7 @@
 #define DONE 1
 
 typedef enum{
-	INITIAL = 1,
+	INITIAL = 2,
 	CHG_PW,
 	O_DOOR,
 	ERROR

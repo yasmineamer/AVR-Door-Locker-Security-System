@@ -6,11 +6,11 @@
  */
 
 #include "timers.h"
-static void (*g_CallBackPtr)(void) = NULL_PTR;
+static volatile void (*g_CallBackPtr)(void) = NULL_PTR;
 
 #ifdef timer1
-static void (*g_CallBackPtr_chB)(void) = NULL_PTR;
-static void (*g_CallBackPtr_chA)(void) = NULL_PTR;
+static volatile void (*g_CallBackPtr_chB)(void) = NULL_PTR;
+static volatile void (*g_CallBackPtr_chA)(void) = NULL_PTR;
 
 #endif
 

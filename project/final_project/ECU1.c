@@ -9,8 +9,8 @@
 #include "ECU1.h"
 
 //uint8 g_ticksCount = 0;
-uint8 open_flag = 0;
-uint8 close_flag = 0;
+volatile uint8 open_flag = 0;
+volatile uint8 close_flag = 0;
 
 /*
  * Description : initialize Modules needed to interface with user
@@ -63,13 +63,14 @@ void user_setPW (void)
 	uint8 password_1[pass_length+2];
 
 	uint8 i;
+
 	if(visits == 0)
 	{
 		visits ++;
 		LCD_clearScreen();
 		LCD_goToRowColumn(0,0);
 		LCD_displayString(" **WELCOME** ");
-		_delay_ms(1000);
+		_delay_ms(2000);
 	}
 
 
@@ -93,9 +94,9 @@ void user_setPW (void)
 
 	password_1[i] ='\0';
 
-	do{
-		UART_sendByte(READY);
-	}while( UART_receiveByte() != READY);
+
+	UART_sendByte(READY);
+//	while( UART_receiveByte() != READY);
 
 	UART_sendString(password_1);
 
@@ -132,9 +133,9 @@ void user_confirmPW (void)
 
 	password_2[i] ='\0';
 
-	do{
-		UART_sendByte(READY);
-	}while( UART_receiveByte() != READY);
+
+	UART_sendByte(READY);
+
 
 	UART_sendString(password_2);
 
@@ -169,9 +170,9 @@ void system_mainMenu (void)
 CHECK System_checkMatching (void)
 {
 	CHECK receive = UNMATCHED;
-	do{
-		UART_sendByte(READY);
-	}while( UART_receiveByte() != READY);
+
+	while((UART_receiveByte ()) != READY);
+
 
 //	UART_sendByte(IF_PW_MATCHED);
 
@@ -215,7 +216,10 @@ void system_confirmSavePW (void)
 
 	LCD_clearScreen();
 }
-
+ /*
+  * Description: get the user option and return it to the calling function also send it
+  * to the second microcontroller.
+  */
 STATE userChooseOption (void)
 {
 	uint8 userInput ;
@@ -261,7 +265,7 @@ CHECK userEnterPW(void)
 	LCD_goToRowColumn(1,0);
 
 	uint8 i;
-	uint8 password[pass_length +1];
+	uint8 password[pass_length +2];
 	for(i=0 ; i<pass_length ; i++)
 	{
 		password[i] = KeyPad_getPressedKey();

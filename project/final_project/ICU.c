@@ -13,7 +13,7 @@
  *******************************************************************************/
 
 /* Global variables to hold the address of the call back function in the application */
-static volatile void (*g_callBackPtr)(void) = NULL_PTR;
+static void (*g_callBackPtr)(void) = NULL_PTR;
 
 /*******************************************************************************
  *                       Interrupt Service Routines                            *

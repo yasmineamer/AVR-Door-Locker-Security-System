@@ -31,13 +31,13 @@
 #undef UPPER_PORT_PINS /* Use the lower 4-bits in the data port */
 
 /* LCD HW Pins */
-#define RS PB1
-#define RW PB2
-#define E  PB3
-#define LCD_CTRL_PORT PORTB
-#define LCD_CTRL_PORT_DIR DDRB
-#define LCD_DATA_PORT PORTD
-#define LCD_DATA_PORT_DIR DDRD
+#define RS PA2
+#define RW PA1
+#define E  PA0
+#define LCD_CTRL_PORT PORTA
+#define LCD_CTRL_PORT_DIR DDRA
+#define LCD_DATA_PORT PORTB
+#define LCD_DATA_PORT_DIR DDRB
 
 /* LCD Commands */
 #define CLEAR_COMMAND 0x01

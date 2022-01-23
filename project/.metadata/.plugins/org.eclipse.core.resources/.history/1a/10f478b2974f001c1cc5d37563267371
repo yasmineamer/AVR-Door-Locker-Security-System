@@ -1,0 +1,44 @@
+/*
+ * MCU2.c
+ *
+ *  Created on: Oct 31, 2021
+ *      Author: Yasmine Amer
+ */
+
+
+#include "MCU2.h"
+
+int main (void)
+{
+	timer1_config timer1_config = {0,F_CPU_CLOCK_1024}; // overflow after 67s
+	Modules_init();
+	STATE state = INITIAL;
+	CHECK check = UNMATCHED ;
+	uint8 error_entry = 0;
+
+
+
+	while(1)
+	{
+		check = UNMATCHED ;
+		state = getState ();
+
+		while(state == INITIAL && check == UNMATCHED)
+		{
+			check = setReceivePW();
+		}
+
+		if (state == CHG_PW)
+		{
+
+		}
+		else if(state == O_DOOR )
+		{
+
+		}
+		else
+		{
+
+		}
+	}
+}
