@@ -7,13 +7,14 @@
 
 
 #include "MCU2.h"
+	extern volatile STATE state ;
+	extern volatile CHECK check ;
 
 int main (void)
 {
 	timer_config timer1_config = {0,F_CPU_CLOCK_1024}; // overflow after 67s
 	MODULES_init();
-	STATE state = INITIAL;
-	CHECK check = UNMATCHED ;
+
 	uint8 error_entry = 0;
 
 
@@ -21,23 +22,26 @@ int main (void)
 	while(1)
 	{
 		check = UNMATCHED ;
-		state = getState();
+		getState();
 
 		while(state == INITIAL && check == UNMATCHED)
 		{
-			check = setReceivePW();
+			 setReceivePW();
 		}
 
 		if (state == CHG_PW)
 		{
 			check = UNMATCHED;
-			while(check == UNMATCHED && error_entry == MAX_TRY)
+			while(check == UNMATCHED)
 			{
-				check = checkMatch();
-				if (check == UNMATCHED)
+				checkMatch();
+
+				error_entry ++;
+				if( error_entry >= MAX_TRY)
 				{
-					error_entry ++;
+					break;
 				}
+
 			}
 			if(error_entry != MAX_TRY)
 			{
@@ -45,7 +49,7 @@ int main (void)
 				check = UNMATCHED;
 				while(check == UNMATCHED)
 				{
-					check = setReceivePW();
+					setReceivePW();
 				}
 			}
 			else if (error_entry == MAX_TRY)
@@ -56,12 +60,15 @@ int main (void)
 		else if(state == O_DOOR )
 		{
 			check = UNMATCHED;
-			while(check == UNMATCHED && error_entry != MAX_TRY)
+			error_entry = 0;
+			while(check == UNMATCHED)
 			{
-				check = checkMatch();
-				if(check == UNMATCHED)
+				checkMatch();
+
+				error_entry ++;
+				if( error_entry >= MAX_TRY)
 				{
-					error_entry ++;
+					break;
 				}
 
 			}
@@ -70,6 +77,7 @@ int main (void)
 				error_entry =0;
 				Timer1_setup (&timer1_config);
 				MOTOR_open();
+				Timer1_setCallBackChA(counterclockwise);
 				MOTOR_stop();
 			}
 			else if(error_entry == MAX_TRY)

@@ -14,8 +14,8 @@
  *******************************************************************************/
 void motor_init (void)
 {
-	SET_BIT (MOTOR_DIR,MOTOR_PIN_A);
-	SET_BIT (MOTOR_DIR,MOTOR_PIN_B);
+	SET_BIT (MOTOR_DIR,MOTOR_PIN_A); //output pin
+	SET_BIT (MOTOR_DIR,MOTOR_PIN_B); // output pin
 	CLEAR_BIT (MOTOR_PORT,MOTOR_PIN_A);
 	CLEAR_BIT (MOTOR_PORT,MOTOR_PIN_B);
 }

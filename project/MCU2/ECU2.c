@@ -14,7 +14,9 @@
 volatile uint8 g_clockwiseFlag = 0;
 volatile uint8 g_counterclockwiseFlag = 0;
 
-
+volatile uint8 stored_password[pass_length+2];
+volatile STATE state = INITIAL;
+volatile CHECK check = UNMATCHED ;
 /******************************************************************************
  *
  * Function Name: MODULES_init
@@ -44,9 +46,9 @@ void MODULES_init (void)
  */
 void Timer1_setup (timer_config * config_ptr)
 {
-	timer1_ctc_chAB_init(config_ptr , 9770, 19532);
-	Timer1_setCallBackChB(clockwise);
-	Timer1_setCallBackChA(counterclockwise);
+	timer1_ctc_chA_init(config_ptr , 9770);
+	Timer1_setCallBackChA(clockwise);
+//	Timer1_setCallBackChA(counterclockwise);
 
 }
 
@@ -64,26 +66,30 @@ void Timer1_setup (timer_config * config_ptr)
  *
  ****************** ***********************************************************/
 
-CHECK setReceivePW (void)
+void setReceivePW (void)
 {
-	uint8 password_1[pass_length+1];
-	uint8 password_2[pass_length+1];
-	CHECK check;
+	uint8 password_1[pass_length+2];
+	uint8 password_2[pass_length+2];
+
 
 
 	while((UART_receiveByte ()) != READY);
 
 	UART_receiveString (password_1);
 
+
 	while((UART_receiveByte ()) != READY);
 
 	UART_receiveString (password_2);
 
-	if (strcmp (password_1,password_2) == 0)
+
+	if ((strcmp (password_1,password_2)) == 0)
 	{
 		check = MATCHED;
-		storePW (password_1);
+		strcpy(stored_password,password_1);
+		storePW (stored_password);
 		UART_sendByte(READY);
+		_delay_ms(1);
 		UART_sendByte (MATCHED);
 	}
 
@@ -91,9 +97,10 @@ CHECK setReceivePW (void)
 	{
 		check = UNMATCHED;
 		UART_sendByte(READY);
+		_delay_ms(1);
 		UART_sendByte (UNMATCHED);
 	}
-	return check;
+
 }
 
 /******************************************************************************
@@ -130,36 +137,39 @@ void storePW (uint8 *password_1_Ptr)
  *
  *****************************************************************************/
 
-CHECK checkMatch (void)
+void checkMatch (void)
 {
 	uint8 Idix;
-	uint8 password[pass_length+1];
-	uint8 stored_password[pass_length+1];
-	CHECK check;
+	uint8 password[pass_length+2];
+
 	while ((UART_receiveByte ()) != READY);
+
 	UART_receiveString (password);
+
 	for(Idix=0 ; Idix<pass_length ; Idix++)
     {
      	EEPROM_readByte(Idix,&stored_password[Idix]);
-     	_delay_ms(5);
     }
+
 	stored_password[Idix] = '\0';
 
-	if ((strcmp (password,stored_password)) == 0)
+	if ((strcmp(password,stored_password)) == 0)
 		{
-			while ((UART_receiveByte ()) != READY);
-			UART_sendByte(READY);
+			UART_sendByte (READY);
+			_delay_ms(3);
+
 			UART_sendByte (MATCHED);
+
 			check = MATCHED;
-			return check;
+
 		}
 	else
 	{
-		while ((UART_receiveByte ()) != READY);
-		UART_sendByte(READY);
+		UART_sendByte (READY);
+		_delay_ms(3);
 		UART_sendByte (UNMATCHED);
 		check = UNMATCHED;
-		return check;
+
 	}
 }
 
@@ -244,10 +254,11 @@ void counterclockwise (void)
  *
  *****************************************************************************/
 
-STATE getState (void)
+void getState (void)
 {
 	while ((UART_receiveByte ()) != READY);
-	return ((UART_receiveByte ()));
+	state = UART_receiveByte ();
+
 }
 
 
@@ -255,3 +266,4 @@ void Toggle_buzzer (void)
 {
     TOGGLE_BIT (PORTD,PD7);
 }
+

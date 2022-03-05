@@ -9,12 +9,13 @@
 
 #include "applicationMCU1.h"
 
+	extern volatile STATE state ;
+	extern volatile CHECK check ;
+	extern volatile  uint8 NumOfTry ;
 
 int main(void)
 {
-	STATE state = INITIAL;
-	CHECK check = UNMATCHED;
-	uint8 NumOfTry = 0;
+
 
 	timer_config timer1_config = {0,F_CPU_CLOCK_1024}; // overflow after 67s
 
@@ -26,9 +27,10 @@ int main(void)
 	{
 		while(check == UNMATCHED && state == INITIAL)
 		{
+			sendState(state);
 			user_setPW();
 			user_confirmPW();
-			check = System_checkMatching();
+			System_checkMatching();
 			if(check == MATCHED)
 			{
 				system_confirmSavePW();
@@ -37,18 +39,21 @@ int main(void)
 
 		system_mainMenu();
 
-		state = userChooseOption(); // get the option from user and send it to the MCU
+		userChooseOption(); // get the option from user and send it to the MCU
 
+		sendState(state);
 		if(state == CHG_PW)
 		{
 			check = UNMATCHED;
 
-			while(check == UNMATCHED && NumOfTry == MAX_TRY)
+			while(check == UNMATCHED)
 			{
-				check = userEnterPW();
-				if( check == UNMATCHED)
+				userEnterPW();
+
+				NumOfTry ++;
+				if (NumOfTry >= MAX_TRY)
 				{
-					NumOfTry ++;
+					break;
 				}
 			}
 
@@ -62,10 +67,15 @@ int main(void)
 
 					user_setPW();
 					user_confirmPW();
-					check = System_checkMatching();
+					System_checkMatching();
 					if(check == MATCHED)
 					{
 						system_confirmSavePW();
+					}
+					NumOfTry ++;
+					if (NumOfTry >= MAX_TRY)
+					{
+						break;
 					}
 				}
 			}
@@ -75,16 +85,20 @@ int main(void)
 				_delay_ms(5000);
 			}
 		}
+
 		else if(state == O_DOOR)
 		{
 			check = UNMATCHED ;
+			NumOfTry = 0;
 
-			while(check == UNMATCHED && NumOfTry == MAX_TRY)
+			while(check == UNMATCHED)
 			{
-				check = userEnterPW();
-				if( check == UNMATCHED)
+				userEnterPW();
+
+				NumOfTry ++;
+				if (NumOfTry >= MAX_TRY)
 				{
-					NumOfTry ++;
+					break;
 				}
 			}
 
@@ -93,6 +107,8 @@ int main(void)
 				NumOfTry = 0;
 				Timer1_setup (&timer1_config);
 				systemConfirmOpenClose();
+				Timer1_setCallBackChA(closeFlag);
+				systemClose ();
 
 			}
 			else if (NumOfTry == MAX_TRY)
@@ -100,12 +116,6 @@ int main(void)
 				system_errorMessage();
 				_delay_ms(5000);
 			}
-		}
-
-		else
-		{
-
-			system_errorMessage();
 		}
 
 

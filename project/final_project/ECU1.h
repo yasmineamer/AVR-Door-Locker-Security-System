@@ -21,12 +21,10 @@
 #include <util/delay.h>
 
 #define pass_length 5
-#define READY 10
-#define NOT_READY 0
-#define IF_PW_MATCHED 7
+#define READY 100
+
 #define MAX_TRY 3
-#define WRONG 0
-#define DONE 1
+
 
 typedef enum{
 	INITIAL = 2,
@@ -36,7 +34,7 @@ typedef enum{
 }STATE;
 
 typedef enum {
-	UNMATCHED,
+	UNMATCHED=10,
 	MATCHED
 }CHECK;
 
@@ -52,12 +50,13 @@ void openFlag (void);
 void closeFlag (void);
 void user_setPW (void);
 void user_confirmPW(void);
-CHECK System_checkMatching(void);
+void System_checkMatching(void);
 void system_errorMessage (void);
 void system_confirmSavePW (void);
-STATE userChooseOption(void);
+void userChooseOption(void);
 void systemConfirmOpenClose(void);
 void systemClose (void);
-CHECK userEnterPW (void);
+void userEnterPW (void);
+void sendState (STATE state);
 
 #endif /* ECU1_H_ */

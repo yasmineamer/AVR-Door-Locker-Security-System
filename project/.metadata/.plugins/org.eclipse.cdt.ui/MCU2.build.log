@@ -1,20 +1,14 @@
-18:40:43 **** Incremental Build of configuration Debug for project MCU2 ****
+21:28:58 **** Incremental Build of configuration Debug for project MCU2 ****
 make all 
-Building file: ../ECU2.c
+Building file: ../MCU2.c
 Invoking: AVR Compiler
-avr-gcc -Wall -g2 -gstabs -O0 -fpack-struct -fshort-enums -ffunction-sections -fdata-sections -std=gnu99 -funsigned-char -funsigned-bitfields -mmcu=atmega16 -DF_CPU=1000000UL -MMD -MP -MF"ECU2.d" -MT"ECU2.o" -c -o "ECU2.o" "../ECU2.c"
+avr-gcc -Wall -g2 -gstabs -O0 -fpack-struct -fshort-enums -ffunction-sections -fdata-sections -std=gnu99 -funsigned-char -funsigned-bitfields -mmcu=atmega16 -DF_CPU=1000000UL -MMD -MP -MF"MCU2.d" -MT"MCU2.o" -c -o "MCU2.o" "../MCU2.c"
 In file included from ../micro_config.h:22,
                  from ../timers.h:14,
-                 from ../ECU2.h:11,
-                 from ../ECU2.c:12:
+                 from ../MCU2.h:10,
+                 from ../MCU2.c:9:
 c:/winavr/lib/gcc/../../avr/include/util/delay.h:90:3: warning: #warning "Compiler optimizations disabled; functions from <util/delay.h> won't work as designed"
-../ECU2.c: In function 'setReceivePW':
-../ECU2.c:82: warning: pointer targets in passing argument 1 of 'strcmp' differ in signedness
-../ECU2.c:82: warning: pointer targets in passing argument 2 of 'strcmp' differ in signedness
-../ECU2.c: In function 'checkMatch':
-../ECU2.c:148: warning: pointer targets in passing argument 1 of 'strcmp' differ in signedness
-../ECU2.c:148: warning: pointer targets in passing argument 2 of 'strcmp' differ in signedness
-Finished building: ../ECU2.c
+Finished building: ../MCU2.c
  
 Building target: MCU2.elf
 Invoking: AVR C Linker
@@ -31,15 +25,15 @@ AVR Memory Usage
 ----------------
 Device: atmega16
 
-Program:    6812 bytes (41.6% Full)
+Program:    7606 bytes (46.4% Full)
 (.text + .data + .bootloader)
 
-Data:         20 bytes (2.0% Full)
+Data:         29 bytes (2.8% Full)
 (.data + .bss + .noinit)
 
 
 Finished building: sizedummy
  
 
-18:40:44 Build Finished. 0 errors, 5 warnings. (took 672ms)
+21:28:59 Build Finished. 0 errors, 1 warnings. (took 1s.203ms)
 

@@ -6,7 +6,6 @@
 C_SRCS += \
 ../ADC.c \
 ../ECU1.c \
-../ICU.c \
 ../applicarionMCU1.c \
 ../keypad.c \
 ../lcd.c \
@@ -16,7 +15,6 @@ C_SRCS += \
 OBJS += \
 ./ADC.o \
 ./ECU1.o \
-./ICU.o \
 ./applicarionMCU1.o \
 ./keypad.o \
 ./lcd.o \
@@ -26,7 +24,6 @@ OBJS += \
 C_DEPS += \
 ./ADC.d \
 ./ECU1.d \
-./ICU.d \
 ./applicarionMCU1.d \
 ./keypad.d \
 ./lcd.d \

@@ -20,10 +20,6 @@
 #include "ECU1.h"
 #include "uart.h"
 
-#define MAX_TRY 3
-#define READY 1
-#define NOT_READY 0
-
 //
 //
 //typedef enum{

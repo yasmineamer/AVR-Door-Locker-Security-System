@@ -11,7 +11,9 @@
 //uint8 g_ticksCount = 0;
 volatile uint8 open_flag = 0;
 volatile uint8 close_flag = 0;
-
+volatile STATE state = INITIAL;
+volatile CHECK check = UNMATCHED;
+volatile uint8 NumOfTry = 0;
 /*
  * Description : initialize Modules needed to interface with user
  * enable global interrupt bit
@@ -29,10 +31,8 @@ void modules_init (void)
  */
 void Timer1_setup (timer_config * config_ptr)
 {
-	timer1_ctc_chAB_init(config_ptr , 9770, 19532);
-	Timer1_setCallBackChB(openFlag);
-	Timer1_setCallBackChA(closeFlag);
-
+	timer1_ctc_chA_init(config_ptr, 9770);
+	Timer1_setCallBackChA(openFlag);
 }
 
 /*
@@ -70,7 +70,7 @@ void user_setPW (void)
 		LCD_clearScreen();
 		LCD_goToRowColumn(0,0);
 		LCD_displayString(" **WELCOME** ");
-		_delay_ms(2000);
+		_delay_ms(5000);
 	}
 
 
@@ -81,12 +81,12 @@ void user_setPW (void)
 	for(i = 0; i< pass_length ;i++)
 	{
 		password_1[i] = KeyPad_getPressedKey();
-
+		_delay_ms(2000);
 		LCD_intgerToString(password_1[i]);
-		_delay_ms(100);
+		_delay_ms(1000);
 		LCD_goToRowColumn(1,i);
 		LCD_displayCharacter('*');
-
+		_delay_ms(1000);
 	}
 
 	password_1[i] = '#';
@@ -94,12 +94,12 @@ void user_setPW (void)
 
 	password_1[i] ='\0';
 
-
+    _delay_ms(300);
 	UART_sendByte(READY);
 //	while( UART_receiveByte() != READY);
-
+	_delay_ms(300);
 	UART_sendString(password_1);
-
+	_delay_ms(300);
 	LCD_clearScreen();
 
 }
@@ -121,11 +121,12 @@ void user_confirmPW (void)
 	for(i=0 ; i<pass_length ; i++)
 	{
 		password_2[i] = KeyPad_getPressedKey();
-
+		_delay_ms(2000);
 		LCD_intgerToString(password_2[i]);
-		_delay_ms(100);
+		_delay_ms(1000);
 		LCD_goToRowColumn(1,i);
 		LCD_displayCharacter('*');
+		_delay_ms(1000);
 	}
 
 	password_2[i] = '#';
@@ -133,10 +134,10 @@ void user_confirmPW (void)
 
 	password_2[i] ='\0';
 
-
+	_delay_ms(1);
 	UART_sendByte(READY);
 
-
+	_delay_ms(1);
 	UART_sendString(password_2);
 
 	LCD_clearScreen();
@@ -167,23 +168,23 @@ void system_mainMenu (void)
  * Description: send to second MCU ask for confirm the password if the two input passwords
  * are the same
  */
-CHECK System_checkMatching (void)
+void System_checkMatching (void)
 {
-	CHECK receive = UNMATCHED;
+
 
 	while((UART_receiveByte ()) != READY);
 
 
 //	UART_sendByte(IF_PW_MATCHED);
 
-	receive = UART_receiveByte();
+	check = UART_receiveByte();
 
-	if(receive != MATCHED)
+	if(check != MATCHED)
 	{
 		system_errorMessage();
-		return receive;
+
 	}
-	return receive;
+
 }
 
 /*
@@ -220,26 +221,27 @@ void system_confirmSavePW (void)
   * Description: get the user option and return it to the calling function also send it
   * to the second microcontroller.
   */
-STATE userChooseOption (void)
+void userChooseOption (void)
 {
 	uint8 userInput ;
 
 	userInput =  KeyPad_getPressedKey();
-
+	_delay_ms(500);
 	if(userInput == '+')
 	{
 		UART_sendByte(READY);
+		_delay_ms(500);
 		UART_sendByte(CHG_PW);
-		return CHG_PW ;
+		state = CHG_PW ;
 	}
 	else if(userInput == '-')
 	{
 		UART_sendByte(READY);
+		_delay_ms(500);
 		UART_sendByte(O_DOOR);
-		return  O_DOOR ;
+		state= O_DOOR ;
 	}
 
-	return ERROR;
 }
 
 void systemConfirmOpenClose(void)
@@ -247,21 +249,24 @@ void systemConfirmOpenClose(void)
 	LCD_clearScreen();
 	LCD_displayString("DOOR is OPEN");
 	while(open_flag == 0);
-	systemClose();
+
+	open_flag = 0 ;
 }
 
 void systemClose (void)
 {
 	LCD_clearScreen();
-	LCD_displayString("DOOR is OPEN");
+	LCD_displayString("DOOR is closed");
 	while(close_flag == 0);
 	timer1_deinit();
+	close_flag = 0 ;
 }
 
-CHECK userEnterPW(void)
+void userEnterPW(void)
 {
 	LCD_clearScreen();
-	LCD_displayString("Enter Password: ");
+	LCD_displayString("Enter Your Password: ");
+	_delay_ms(1);
 	LCD_goToRowColumn(1,0);
 
 	uint8 i;
@@ -269,6 +274,7 @@ CHECK userEnterPW(void)
 	for(i=0 ; i<pass_length ; i++)
 	{
 		password[i] = KeyPad_getPressedKey();
+		_delay_ms(2000);
 		LCD_goToRowColumn(1,i);
 		LCD_displayCharacter('*');
 	}
@@ -278,15 +284,19 @@ CHECK userEnterPW(void)
 
 	password[i] ='\0';
 
-	do{
-		UART_sendByte(READY);
-	}while( UART_receiveByte() != READY);
+
+	UART_sendByte(READY);
+	_delay_ms(1);
 
 	UART_sendString(password);
 
-	while(UART_receiveByte() != READY);
 
-	return (UART_receiveByte());
+	check = (UART_receiveByte());
 }
 
-
+void sendState (STATE state)
+{
+	UART_sendByte(READY);
+	_delay_ms(1);
+	UART_sendByte(state);
+}

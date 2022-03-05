@@ -23,12 +23,10 @@
 //#include "i2c.h"
 
 #define pass_length 5
-#define READY 10
-#define NOT_READY 0
-#define IF_PW_MATCHED 7
+#define READY 100
+
+
 #define MAX_TRY 3
-#define WRONG 0
-#define DONE 1
 
 typedef enum{
 	INITIAL = 2,
@@ -37,25 +35,25 @@ typedef enum{
 }STATE;
 
 typedef enum {
-	UNMATCHED,
+	UNMATCHED=10,
 	MATCHED
 }CHECK;
 
 
 /****************************************Functions prototype***********************************************/
 
-CHECK setReceivePW (void);
+void setReceivePW (void);
 void clockwise (void);
 void counterclockwise (void);
-STATE getState (void);
+void getState (void);
 void Toggle_buzzer (void);
 void MOTOR_stop (void);
 void MOTOR_close (void);
 void MOTOR_open (void);
 void alert (void);
-CHECK checkMatch (void);
+void checkMatch (void);
 void storePW (uint8 *password_1_Ptr);
-CHECK setReceivePW (void);
+void setReceivePW (void);
 void Timer1_setup (timer_config * config_ptr);
 void MODULES_init (void);
 #endif /* ECU2_H_ */

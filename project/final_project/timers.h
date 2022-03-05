@@ -38,13 +38,13 @@ typedef struct
 
 /**********************************************FUNCTION PROTOTYPES************************************************/
                   /*********************************TIMER1***********************************/
-void TIMER1_delay (timer_config * config_ptr);
-void timer1_ovf_init(timer_config * config_ptr);
-void timer1_ctc_chAB_init(timer_config * config_ptr ,uint16 compare_matchB, uint16 compare_matchA);
-//void timer1_ctc_chB_init(timer_config * config_ptr , uint16 compare_matchB);
-void TIMER1_PWM_init(timer_config * config_ptr);
-void set_duty_ChannelA (uint16 duty);
-void set_duty_ChannelB (uint16 duty);
+void TIMER1_delay (const timer_config * config_ptr);
+void timer1_ovf_init(const timer_config * config_ptr);
+void timer1_ctc_chA_init(const timer_config * config_ptr , uint16 compare_matchA);
+void timer1_ctc_chB_init(const timer_config * config_ptr , uint16 compare_matchB);
+void TIMER1_PWM_init(const timer_config * config_ptr);
+void set_duty_ChannelA ( uint16 duty);
+void set_duty_ChannelB ( uint16 duty);
 
 void Timer1_setCallBackOvf(void(*a_ptr)(void));
 void Timer1_setCallBackChA(void(*a_ptr)(void));
@@ -52,12 +52,21 @@ void Timer1_setCallBackChB(void(*a_ptr)(void));
 
 void timer1_deinit (void);
 
-               /***********************************TIMER0***********************************/
+               /***********************************TIMER2***********************************/
 void TIMER2_delay (timer_config * config_ptr);
 void timer2_ovf_init(timer_config * config_ptr);
 void timer2_ctc_init(timer_config * config_ptr , uint8 compare_match);
 void TIMER2_PWM_init(timer_config * config_ptr);
 void TIMER2_set_duty (uint8 duty);
+
+
+                /***********************************TIMER0***********************************/
+
+void delay (const timer_config * config_ptr);
+void timer0_ovf_init(const timer_config * config_ptr);
+void timer0_ctc_init(const timer_config * config_ptr , uint8 compare_match);
+void PWM_init(const timer_config * config_ptr);
+void set_duty (uint8 duty);
 
 
 #endif /* TIMERS_H_ */
