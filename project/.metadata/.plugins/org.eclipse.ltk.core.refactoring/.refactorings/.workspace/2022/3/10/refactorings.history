@@ -1,3 +1,0 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<session version="1.0">&#x0A;<refactoring comment="Delete resource &apos;final_project/ICU.c&apos;" deleteContents="false" description="Delete resource &apos;final_project/ICU.c&apos;" element1="/final_project/ICU.c" flags="7" id="org.eclipse.ltk.core.refactoring.delete.resources" resources="1" stamp="1646492014375"/>&#x0A;<refactoring comment="Delete resource &apos;final_project/ICU.h&apos;" deleteContents="false" description="Delete resource &apos;final_project/ICU.h&apos;" element1="/final_project/ICU.h" flags="7" id="org.eclipse.ltk.core.refactoring.delete.resources" resources="1" stamp="1646492019316"/>
-</session>
